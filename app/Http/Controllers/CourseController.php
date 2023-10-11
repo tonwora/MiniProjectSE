@@ -74,7 +74,16 @@ class CourseController extends Controller
         ->count();
         $allCourse = Course::all();
         $ta = TA::all();
-        return view('CourseClasswork',compact('course','students','allCourse','ta','works','work_count'));
+
+        $stat_finish = work_status::where('work_id',$id)
+        ->where('date_process','ส่งแล้ว')
+        ->count();
+        $stat_notfinish = work_status::where('work_id',$id)
+        ->where('date_process','ยังไม่ส่ง')
+        ->count();
+
+
+        return view('CourseClasswork',compact('course','students','allCourse','ta','works','work_count','stat_finish','stat_notfinish'));
     }
 
     public function coursePeople($id){
