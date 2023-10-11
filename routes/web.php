@@ -43,6 +43,8 @@ Route::middleware([
     Route::post('/course/post/comment',[CourseController::class,'AddComment'])->name('dashboard.AddComment');
     Route::post('/course/post/comment/edit',[CourseController::class,'EditComment'])->name('dashboard.EditComment');
     Route::get('/course/post/comment/delete/{id}',[CourseController::class,'DelComment'])->name('dashboard.DelComment');
+    Route::get('/showwork/{id}',[CourseController::class,'WorkStat'])->name('showwork');
+
 
     //Teacher
     Route::middleware(['auth', 'check:1'])->group(function () {
@@ -56,13 +58,11 @@ Route::middleware([
     Route::post('/course/addTA', [CourseController::class, 'AddTA'])->name('dashboard.AddTA');
     Route::post('/course/updateTA', [CourseController::class, 'EditTA'])->name('dashboard.EditTA');
     Route::get('/course/deleteTA/{id}',[CourseController::class,'DelTA'])->name('dashboard.DelTA');
+    Route::post('/addwork', [CourseController::class, 'addwork'])->name('course.addwork');
+    Route::post('/course/updatework', [CourseController::class, 'Editwork'])->name('dashboard.Editwork');
+    Route::get('/course/deletework/{id}',[CourseController::class,'Delwork'])->name('dashboard.Delwork');
+    Route::post('/work/givepoint',[CourseController::class,'givepoint'])->name('givepoint');
     });
-
-    //TA
-    Route::middleware(['auth', 'check:2'])->group(function () {
-
-    });
-
     //Student
     Route::middleware(['auth', 'check:3'])->group(function () {
 

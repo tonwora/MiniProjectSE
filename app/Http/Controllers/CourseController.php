@@ -8,7 +8,11 @@ use App\Models\post;
 use App\Models\Student;
 use App\Models\TA;
 use App\Models\User;
+use App\Models\work;
+use App\Models\work_status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -56,10 +60,21 @@ class CourseController extends Controller
 
     public function courseclasswork($id){
         $course = course::where("id",$id)->get();
-        $students = Student::all();
+        $students = student::all()
+        ->where('course_id',$id);
+
+        $works = DB::table('works')
+        ->where('course_id',$id)
+        ->select('works.*')
+        ->get();
+
+
+        $work_count = DB::table('works')
+        ->where('course_id',$id)
+        ->count();
         $allCourse = Course::all();
         $ta = TA::all();
-        return view('CourseClasswork',compact('course','students','allCourse','ta'));
+        return view('CourseClasswork',compact('course','students','allCourse','ta','works','work_count'));
     }
 
     public function coursePeople($id){
@@ -171,5 +186,105 @@ class CourseController extends Controller
         $comment = comment::where('id', $id);
         $comment->delete();
         return redirect()->back();
+    }
+
+    public function addwork(Request $request){
+        $userID = Auth::user()->id;
+        $course_work = new work;
+        $course_work->course_id = $request->course_id;
+        $course_work->work_name = $request->name;
+        $course_work->work_maxpoint = $request->point;
+        $course_work->work_finish = $request->date;
+        $course_work->save();
+
+        $works = DB::table('works')
+        ->join('courses','works.course_id','=','courses.id')
+        ->where('course_id',$request->course_id)
+        ->select('courses.id','works.work_id')
+        ->get();
+
+
+        // $students = student::all()
+        // ->where('course_id',$id);
+
+        // $students = student::all()
+        // ->where('course_id',$works->pluck('id'));
+        $students = student::whereIn('course_id', $works->pluck('id'))->get();
+        foreach ($students as $st) {
+            $workstat = new work_status;
+            $wid = $works->pluck('work_id');
+            $workstat->work_id = $wid[0];
+            $workstat->user_id = $st->id;
+            $workstat->std = $st->stdcode;
+            $workstat->name = $st->name;
+            $workstat->point = 0;
+            $workstat->date_process = "ยังไม่ส่ง";
+            $workstat->save();
+        }
+
+
+
+        return redirect()->back();
+    }
+    public function Editwork(Request $request){
+        work::where('work_id', $request->id)->update([
+            'work_name' => $request->name,
+            'work_maxpoint' => $request->point,
+            'work_finish' => $request->date,
+        ]);
+        return redirect()->back();
+    }
+
+    public function Delwork($id){
+        // ลบข้อมูลที่เกี่ยวข้องก่อนจากตาราง work_statuses
+        work_status::where('work_id', $id)->delete();
+
+        // ลบข้อมูลจากตาราง work
+        Work::where('work_id', $id)->delete();
+
+        return redirect()->back();
+    }
+
+
+
+    public function WorkStat($id){
+
+
+        // $work = work::where('work_id',$id);
+        // $students = student::all()
+        // ->where('course_id',$id);
+
+        // $course = DB::table('courses')
+        // ->join('works','courses.id','=','works.course_id')
+        // ->join('students','courses.id','=','students.course_id')
+        // ->where('works.work_id','=',$id)
+        // ->select('works.*','students.*','courses.*')
+        // ->get();
+
+
+        $detail = DB::table('courses')
+        ->join('works','courses.id','=','works.course_id')
+        ->where('works.work_id','=',$id)
+        ->select('works.*')
+        ->get();
+
+        $course = work_status::all()
+        ->where('work_id',$id);
+
+
+
+
+        return view('showwork')->with('course',$course)->with('detail',$detail);
+    }
+
+
+    public function givepoint(Request $request){
+        work_status::where('user_id', $request->std_id)->update([
+            'point' => $request->point,
+            'date_process' => $request->stat,
+        ]);
+        return redirect()->back();
+
+
     }
 }
