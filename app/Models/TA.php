@@ -10,4 +10,10 @@ class TA extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    protected $fillable = [
+        'name',
+        'email',
+        'course_id',
+    ];
+    protected $table = 't_a_s';
 }

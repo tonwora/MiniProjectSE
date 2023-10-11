@@ -6,6 +6,7 @@ use App\Models\TA;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\ExcelCSVController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +63,12 @@ Route::middleware([
     Route::post('/course/updatework', [CourseController::class, 'Editwork'])->name('dashboard.Editwork');
     Route::get('/course/deletework/{id}',[CourseController::class,'Delwork'])->name('dashboard.Delwork');
     Route::post('/work/givepoint',[CourseController::class,'givepoint'])->name('givepoint');
+
+    //การimport export student
+    Route::post('import-excel-csv-file', [ExcelCSVController::class, 'importExcelCSV']);
+    Route::get('export-excel-csv-file/{slug}', [ExcelCSVController::class, 'exportExcelCSV']);
+
+    Route::post('import-excel-csv-file-TA', [ExcelCSVController::class, 'importExcelCSVTA']);
     });
     //Student
     Route::middleware(['auth', 'check:3'])->group(function () {

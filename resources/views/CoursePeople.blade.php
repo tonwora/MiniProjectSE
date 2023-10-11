@@ -146,25 +146,67 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="excelModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {{-- import excel TA --}}
+    <div class="modal fade" id="excelModalTA" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">นำเข้ารายบุคคล</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">นำเข้าไฟล์excel</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group">
-                            <label for="excel_file">เลือกไฟล์ Excel:</label>
-                            <input type="file" name="excel_file" id="excel_file">
-                        </div>
-                        <button type="submit" class="btn btn-primary">นำเข้าไฟล์ Excel</button>
+                        <form id="excel-csv-import-form" method="POST"  action="{{ url('import-excel-csv-file-TA') }}" accept-charset="utf-8" enctype="multipart/form-data">
+ 
+                            @csrf
+                                     
+                              <div class="row">
+                   
+                                  <div class="col-md-12">
+                                      <div class="form-group">
+                                          <input type="file" name="file" placeholder="Choose file">
+                                      </div>
+                                      @error('file')
+                                          <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                      @enderror
+                                  </div>              
+                              </div>     
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="submit" class="btn btn-outline-success">เพิ่ม</button>
+                    <button type="submit" class="btn btn-outline-success" id="submit">เพิ่ม</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    {{-- import excel std --}}
+    <div class="modal fade" id="excelModalStd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">นำเข้าไฟล์excel</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                        <form id="excel-csv-import-form" method="POST"  action="{{ url('import-excel-csv-file') }}" accept-charset="utf-8" enctype="multipart/form-data">
+ 
+                            @csrf
+                                     
+                              <div class="row">
+                   
+                                  <div class="col-md-12">
+                                      <div class="form-group">
+                                          <input type="file" name="file" placeholder="Choose file">
+                                      </div>
+                                      @error('file')
+                                          <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                      @enderror
+                                  </div>              
+                              </div>     
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="submit" class="btn btn-outline-success"  id="submit">เพิ่ม</button>
                 </div>
             </form>
             </div>
@@ -194,7 +236,7 @@
                         <div class="card-body">
                             @foreach ($course as $c)
                             @if(Auth::user()->roles == 1 && $c->teacher_id == Auth::user()->id )
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#excelModal">นำเข้าไฟล์ Excel</button>
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#excelModalTA">นำเข้าไฟล์ Excel</button>
                                 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#AddTAModal">นำเข้ารายบุคคล</button>
                             @endif
                             @endforeach
@@ -237,7 +279,7 @@
                             <div class="card-body">
                                 @foreach ($course as $c)
                                 @if(Auth::user()->roles == 1 && $c->teacher_id == Auth::user()->id )
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#excelModal">นำเข้าไฟล์ Excel</button>
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#excelModalStd">นำเข้าไฟล์ Excel</button>
                                 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">นำเข้ารายบุคคล</button>
                                 @endif
                                 @endforeach
