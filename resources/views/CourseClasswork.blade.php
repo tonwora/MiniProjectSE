@@ -129,11 +129,10 @@
                                     <th scope="col">ชื่องาน</th>
                                     <th scope="col">คะแนนเต็ม</th>
                                     <th scope="col">ช่วงกำหนดเวลา</th>
-                                    @if(Auth::user()->role == 1)
+                                    @if(Auth::user()->roles == 1)
                                     <th scope="col">สร้างเมื่อ</th>
                                     <th scope="col">ทำเสร็จแล้ว</th>
-                                    <th scope="col">กำลังทำ</th>
-                                    <th scope="col">ยังไม่เริ่มทำ</th>
+                                    <th scope="col">ยังไม่ทำ</th>
                                     @endif
 
                                 </tr>
@@ -145,11 +144,10 @@
                                 style="text-decoration: underline;">{{ $w->work_name }}</td>
                             <td>{{ $w->work_maxpoint }}</td>
                             <td>{{ $w->work_finish }}</td>
-                            @if(Auth::user()->role == 1)
+                            @if(Auth::user()->roles == 1)
                             <td>{{ $w->created_at }}</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td>{{ $stat_finish }}</td>
+                            <td>{{ $stat_notfinish }}</td>
                             @endif
                             <td>
                                 @foreach ($course as $c)
